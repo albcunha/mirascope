@@ -415,20 +415,56 @@ Some model providers have their models hosted on major cloud providers such as A
         azure_client_wrapper,
     )
 
-
     class BookRecommender(OpenAICall):
         prompt_template = "Please recommend a fantasy book."
 
-        call_params = OpenAICallParams(model="AZURE_DEPLOYMENT_NAME")
+        call_params = OpenAICallParams(model="OPENAI_MODEL_NAME")
         configuration = BaseConfig(
             client_wrappers=[
                 azure_client_wrapper(
                     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+                    organization=os.get.env("AZURE_SUBSCRIPTION_ID"),
                     api_version="2024-02-01",
                     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+                    azure_deployment=os.get.env("AZURE_MODEL_DEPLOYMENT_NAME")
                 )
             ]
         )
+
+
+    recommender = BookRecommender()
+    response = recommender.call()
+    print(response.content)
+    ```
+
+You can also create a custom class with a default config:
+
+```python
+    import os
+
+    from mirascope.base import BaseConfig
+    from mirascope.openai import (
+        OpenAICall,
+        OpenAICallParams,
+        azure_client_wrapper,
+    )
+
+    class AzureOpenaiCall:
+        call_params = OpenAICallParams(model="OPENAI_MODEL_NAME")
+        configuration = BaseConfig(
+            client_wrappers=[
+                azure_client_wrapper(
+                    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+                    organization=os.get.env("AZURE_SUBSCRIPTION_ID"),
+                    api_version="2024-02-01",
+                    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+                    azure_deployment=os.get.env("AZURE_MODEL_DEPLOYMENT_NAME")
+                )
+            ]
+        )
+
+    class BookRecommender(AzureOpenaiCall):
+        prompt_template = "Please recommend a fantasy book."
 
 
     recommender = BookRecommender()
